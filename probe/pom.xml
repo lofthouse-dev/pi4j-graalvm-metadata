@@ -21,6 +21,10 @@
         This module is not published; it is an internal build tool.
     </description>
 
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.pi4j</groupId>

@@ -17,7 +17,7 @@ Full background: `notes/pi4j-graalvm-metadata-project.md` (in the iron-j repo).
 | Step | Status | Description |
 |---|---|---|
 | 1 | **Done** | Probe + metadata generation verified locally |
-| 2 | TODO | Maven pom.xml for `metadata` module; copy generated JSON; publish to GitHub Packages |
+| 2 | **Done** | Maven pom.xml for `metadata` module; dynamic generation wired into build; publish config added |
 | 3 | TODO | GitHub Actions workflow: probe → generate → publish |
 
 ---
@@ -47,25 +47,24 @@ unused for this project). Built in `graalvm-pi-builder/` in the iron-j repo.
 
 ---
 
-## How to regenerate metadata
+## How to build the metadata JAR
+
+```bash
+mvn package
+```
+
+This builds the probe fat JAR, then the metadata module's build runs
+`scripts/generate-metadata.sh` inside the container with `native-image-agent`. The captured
+JSON lands in `metadata/target/generated-resources/` and is packaged directly into the JAR.
+No manual copy step; nothing is committed.
+
+To regenerate standalone (outside the Maven build):
 
 ```bash
 bash scripts/run-probe.sh
 ```
 
-This builds the probe fat JAR via Maven, then runs it inside the container with
-`native-image-agent`. Output: `generated-config/reachability-metadata.json`.
-
-After regenerating, copy the JSON to the metadata module and rebuild:
-
-```bash
-mkdir -p metadata/src/main/resources/META-INF/native-image/com.pi4j/pi4j-plugin-ffm
-cp generated-config/reachability-metadata.json \
-   metadata/src/main/resources/META-INF/native-image/com.pi4j/pi4j-plugin-ffm/
-mvn -pl metadata package
-```
-
-`generated-config/` is gitignored.
+Output: `generated-config/reachability-metadata.json` (gitignored).
 
 ---
 
