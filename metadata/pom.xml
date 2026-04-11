@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>dev.lofthouse.pi4j</groupId>
+        <artifactId>pi4j-ffm-metadata-parent</artifactId>
+        <version>4.0.0-1</version>
+    </parent>
+
+    <artifactId>pi4j-ffm-metadata-bookworm-graal25</artifactId>
+    <packaging>jar</packaging>
+
+    <name>pi4j-ffm-metadata-bookworm-graal25</name>
+    <description>
+        GraalVM reachability metadata for com.pi4j:pi4j-plugin-ffm:4.0.0, captured on
+        Debian bookworm (same glibc as Raspberry Pi OS 12) with GraalVM CE 25.x.
+        Add as a dependency to automatically register all Pi4J FFM downcall handles
+        for native-image without any plugin configuration.
+    </description>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.2</version>
+                <configuration>
+                    <!-- Zero-code JAR: resources only, no Java sources -->
+                    <excludes>
+                        <exclude>**/*.class</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
