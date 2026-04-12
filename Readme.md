@@ -159,15 +159,15 @@ The container image used at build time has two tag forms:
 ### Minor GraalVM patch upgrade (e.g. 25.0.2 → 25.0.3)
 
 1. Publish the `bookworm-25.0.3` tag in the `graalvm-pi-builder` repo.
-2. Update `GRAALVM_PI_BUILDER_IMAGE` in `.github/workflows/build.yml`.
-3. Update the container cache key in the workflow to `graalvm-pi-builder-bookworm-25.0.3`.
-4. If the captured downcall descriptors change, bump the metadata patch version in
+2. Update `GRAALVM_PI_BUILDER_IMAGE` in `.github/workflows/build.yml`; the workflow cache key
+   is derived from this value so it updates automatically — no separate change needed.
+3. If the captured downcall descriptors change, bump the metadata patch version in
    `metadata/pom.xml` and the parent `pom.xml`.
 
 ### Major GraalVM version bump (e.g. 25 → 26)
 
 1. Build and publish `bookworm-graal26` / `bookworm-26.0.0` tags in `graalvm-pi-builder`.
-2. Update `GRAALVM_PI_BUILDER_IMAGE` and the cache key in `.github/workflows/build.yml`.
+2. Update `GRAALVM_PI_BUILDER_IMAGE` in `.github/workflows/build.yml`; the cache key updates automatically.
 3. Update `artifactId` in `metadata/pom.xml` from `pi4j-ffm-metadata-bookworm-graal25`
    to `pi4j-ffm-metadata-bookworm-graal26`.
 4. Update all `graal25` references in `Readme.md` and `CLAUDE.md`.
