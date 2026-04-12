@@ -23,18 +23,16 @@ From a **clean working tree** on `main`:
 mvn --batch-mode release:prepare
 ```
 
-The plugin will:
-1. Prompt for (or derive) the release version — e.g. `4.0.0-1`
-2. Prompt for the tag name — defaults to `4.0.0-1` (matches the version)
-3. Prompt for the next development version — e.g. `4.0.0-2-SNAPSHOT`
-4. Run `mvn package` to verify the build (configured via `preparationGoals`)
-5. Commit the release versions, create the tag, commit the next SNAPSHOT versions
+With `--batch-mode` the plugin runs fully non-interactively. It derives versions
+automatically from the current SNAPSHOT:
 
-Then push the branch and the tag:
+1. Strips `-SNAPSHOT` to produce the release version — e.g. `4.0.0-1-SNAPSHOT` → `4.0.0-1`
+2. Tags using that version — e.g. `4.0.0-1`
+3. Increments the metadata patch for the next dev version — e.g. `4.0.0-2-SNAPSHOT`
+4. Runs `mvn package` to verify the build (configured via `preparationGoals`)
+5. Commits and **pushes** the release version, the tag, and the next SNAPSHOT version
 
-```bash
-git push && git push --tags
-```
+No separate `git push` is needed — the plugin pushes everything automatically.
 
 GitHub Actions picks up the tag and publishes the artifact automatically (see CI below).
 
@@ -60,9 +58,11 @@ https://github.com/lofthouse-dev/pi4j-graalvm-metadata/packages
 
 Consumers can resolve the artifact as described in the [Readme.md](Readme.md).
 
-## Rolling back a failed release:prepare
+## Rolling back a release:prepare
 
-If `release:prepare` fails or you need to undo it before pushing:
+Because the plugin pushes automatically, rollback depends on how far it got.
+
+**If it failed before pushing** — run:
 
 ```bash
 mvn release:rollback
@@ -74,4 +74,11 @@ This restores the POM versions and removes the local tag. If `rollback` is not a
 ```bash
 git tag -d 4.0.0-1          # delete the local tag
 git reset --hard HEAD~2      # undo the two release commits (check count with git log first)
+```
+
+**If it pushed successfully** — you need to revert on the remote too:
+
+```bash
+git push origin :4.0.0-1                    # delete the remote tag
+git push --force-with-lease origin main      # push the reset branch (after local reset above)
 ```
