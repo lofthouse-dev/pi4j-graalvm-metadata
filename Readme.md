@@ -126,14 +126,9 @@ Set `GRAALVM_PI_BUILDER_IMAGE` to use a locally built image:
 GRAALVM_PI_BUILDER_IMAGE=ghcr.io/lofthouse-dev/graalvm-pi-builder:latest mvn package
 ```
 
-### Publishing
+### Releasing
 
-```bash
-mvn deploy
-```
-
-Deploys the metadata JAR to GitHub Packages. Requires `GITHUB_TOKEN` or a PAT with
-`write:packages` configured in `~/.m2/settings.xml` under the server id `github`.
+See [RELEASING.md](RELEASING.md) for the full release procedure.
 
 ## CI
 

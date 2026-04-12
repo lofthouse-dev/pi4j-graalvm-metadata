@@ -1,12 +1,13 @@
-name: Build
+name: Publish
 
 on:
-  pull_request:
-    branches: [main]
-  workflow_dispatch:
+  push:
+    tags:
+      - '[0-9]*'
 
 permissions:
   contents: read
+  packages: write
 
 env:
   # Pinned to a version tag rather than a digest. graalvm-pi-builder is a first-party image
@@ -15,7 +16,7 @@ env:
   GRAALVM_PI_BUILDER_IMAGE: ghcr.io/lofthouse-dev/graalvm-pi-builder:bookworm-25.0.2
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,11 +28,14 @@ jobs:
         with:
           platforms: arm64
 
-      - name: Set up Java 25
+      - name: Set up Java 25 (with GitHub Packages auth)
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '25'
+          server-id: github
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_TOKEN
 
       - name: Cache Maven dependencies
         uses: actions/cache@v4
@@ -45,5 +49,8 @@ jobs:
         with:
           image: ${{ env.GRAALVM_PI_BUILDER_IMAGE }}
 
-      - name: Build
-        run: mvn --batch-mode package
+      - name: Publish to GitHub Packages
+        run: mvn --batch-mode deploy
+        env:
+          MAVEN_USERNAME: ${{ github.actor }}
+          MAVEN_TOKEN: ${{ secrets.GITHUB_TOKEN }}
