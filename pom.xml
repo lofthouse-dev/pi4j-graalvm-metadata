@@ -48,7 +48,9 @@
                 <configuration>
                     <tagNameFormat>@{project.version}</tagNameFormat>
                     <!-- Developer only runs release:prepare; CI publishes on tag push.
-                         Configure perform goals to package-only as a safety net. -->
+                         preparationGoals controls what Maven runs during release:prepare.
+                         goals controls release:perform — package-only as a safety net. -->
+                    <preparationGoals>package</preparationGoals>
                     <goals>package</goals>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                 </configuration>

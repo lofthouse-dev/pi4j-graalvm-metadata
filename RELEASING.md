@@ -25,7 +25,7 @@ The plugin will:
 1. Prompt for (or derive) the release version — e.g. `4.0.0-1`
 2. Prompt for the tag name — defaults to `4.0.0-1` (matches the version)
 3. Prompt for the next development version — e.g. `4.0.0-2-SNAPSHOT`
-4. Run `mvn package` to verify the build
+4. Run `mvn package` to verify the build (configured via `preparationGoals`)
 5. Commit the release versions, create the tag, commit the next SNAPSHOT versions
 
 Then push the branch and the tag:
