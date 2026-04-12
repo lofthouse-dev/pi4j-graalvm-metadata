@@ -1,12 +1,7 @@
 # CLAUDE.md — pi4j-graalvm-metadata
 
-This repo produces a zero-code Maven JAR containing GraalVM `reachability-metadata.json`
-for `com.pi4j:pi4j-plugin-ffm:4.0.0`. Without it, any Pi4J-based GraalVM native image fails
-with `MissingForeignRegistrationError` because the `FunctionDescriptor` shapes passed to
-`Linker.nativeLinker().downcallHandle()` are not registered at build time.
-
-Adding the artifact as a Maven dependency is the only consumer action required — `native-image`
-discovers the metadata automatically from the classpath.
+For a full description of the project — what it does, why, prerequisites, build instructions,
+and consumption — see [Readme.md](Readme.md).
 
 Full background: `notes/pi4j-graalvm-metadata-project.md` (in the iron-j repo).
 
@@ -47,48 +42,6 @@ unused for this project). Built in `graalvm-pi-builder/` in the iron-j repo.
 
 ---
 
-## How to build the metadata JAR
-
-```bash
-mvn package
-```
-
-This builds the probe fat JAR, then the metadata module's build runs
-`scripts/generate-metadata.sh` inside the container with `native-image-agent`. The captured
-JSON lands in `metadata/target/generated-resources/` and is packaged directly into the JAR.
-No manual copy step; nothing is committed.
-
-To regenerate standalone (outside the Maven build):
-
-```bash
-bash scripts/run-probe.sh
-```
-
-Output: `generated-config/reachability-metadata.json` (gitignored).
-
----
-
-## Project structure
-
-```
-pom.xml                          Parent POM (multi-module)
-probe/
-  pom.xml                        Depends on pi4j-plugin-ffm:4.0.0; builds fat JAR via shade
-  src/main/java/Probe.java       Instantiates the 5 *Native classes to trigger static init
-  src/main/resources/
-    agent-filter.json            Restricts agent capture to com.pi4j.plugin.ffm.** (native-image-agent glob syntax, not regex)
-scripts/
-  run-probe.sh                   Builds probe JAR, runs in container with agent
-metadata/
-  pom.xml                        Zero-code JAR; packaging only
-  src/main/resources/
-    META-INF/native-image/
-      com.pi4j/pi4j-plugin-ffm/
-        reachability-metadata.json  (generated at build time; not committed)
-```
-
----
-
 ## The 5 Context classes
 
 | Context class | Package | Native functions | Notes |
@@ -116,26 +69,3 @@ Pi4J's logging dependency, harmless for native-image.
   access/reflection). These entries are harmless but can be stripped manually if desired.
 - **Maven Central:** GitHub Packages requires `read:packages` PAT for consumers. When adoption
   grows, publish to Maven Central via Sonatype OSSRH (requires artifact signing setup).
-
----
-
-## Publishing (Step 2 / Step 3)
-
-GitHub Packages initially. Consumers need in their `pom.xml`:
-
-```xml
-<repositories>
-  <repository>
-    <id>github-pi4j-graalvm-metadata</id>
-    <url>https://maven.pkg.github.com/lofthouse-dev/pi4j-graalvm-metadata</url>
-  </repository>
-</repositories>
-
-<dependency>
-  <groupId>dev.lofthouse.pi4j</groupId>
-  <artifactId>pi4j-ffm-metadata-bookworm-graal25</artifactId>
-  <version>4.0.0-1</version>
-</dependency>
-```
-
-Consumers also need a GitHub PAT with `read:packages` in their Maven `settings.xml`.
