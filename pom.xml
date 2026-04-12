@@ -26,8 +26,6 @@
         <maven.compiler.release>25</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <pi4j.version>4.0.0</pi4j.version>
-        <!-- Skip deployment for this parent POM and probe by default; metadata module overrides -->
-        <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
 
     <distributionManagement>
