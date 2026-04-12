@@ -13,7 +13,7 @@ Full background: `notes/pi4j-graalvm-metadata-project.md` (in the iron-j repo).
 |---|---|---|
 | 1 | **Done** | Probe + metadata generation verified locally |
 | 2 | **Done** | Maven pom.xml for `metadata` module; dynamic generation wired into build; publish config added |
-| 3 | TODO | GitHub Actions workflow: probe → generate → publish |
+| 3 | **In progress** | GitHub Actions workflow: probe → generate → publish (PR build workflow added; publish step pending) |
 
 ---
 

@@ -86,7 +86,7 @@ Add the following to your Maven `~/.m2/settings.xml`:
 | **Java** | GraalVM CE 25 (or any JDK 25+; GraalVM is needed inside the container) |
 | **Maven** | 3.9+ |
 | **Podman** | Must be on `PATH`; used to run the `graalvm-pi-builder` container |
-| **Container image** | `ghcr.io/lofthouse-dev/graalvm-pi-builder:bookworm-graal25` — pulled automatically on first run |
+| **Container image** | `ghcr.io/lofthouse-dev/graalvm-pi-builder:bookworm-graal25` — pulled automatically on first run (local); CI pins to `bookworm-25.0.2` |
 
 > **Note:** Docker is not supported. The build scripts use `podman` explicitly.
 
@@ -134,6 +134,43 @@ mvn deploy
 
 Deploys the metadata JAR to GitHub Packages. Requires `GITHUB_TOKEN` or a PAT with
 `write:packages` configured in `~/.m2/settings.xml` under the server id `github`.
+
+## CI
+
+Pull requests targeting `main` are built automatically via `.github/workflows/build.yml`.
+The workflow can also be triggered manually via `workflow_dispatch`.
+
+The CI build:
+1. Installs Temurin 25 on the runner to compile the probe JAR.
+2. Sets up QEMU binfmt for arm64 emulation (needed to run the arm64 container on x86_64).
+3. Runs `mvn package` with `GRAALVM_PI_BUILDER_IMAGE` pinned to a version-specific container
+   tag (`bookworm-25.0.2`) rather than the mutable `bookworm-graal25` tag, for reproducibility.
+4. Caches both Maven dependencies and the container image between runs.
+
+## Upgrading the GraalVM build environment
+
+The container image used at build time has two tag forms:
+
+| Tag | Meaning |
+|---|---|
+| `bookworm-graal25` | Mutable — always the latest GraalVM 25.x build; convenient for local dev |
+| `bookworm-25.0.2` | Version-pinned — specific build; used by CI for reproducibility |
+
+### Minor GraalVM patch upgrade (e.g. 25.0.2 → 25.0.3)
+
+1. Publish the `bookworm-25.0.3` tag in the `graalvm-pi-builder` repo.
+2. Update `GRAALVM_PI_BUILDER_IMAGE` in `.github/workflows/build.yml`.
+3. Update the container cache key in the workflow to `graalvm-pi-builder-bookworm-25.0.3`.
+4. If the captured downcall descriptors change, bump the metadata patch version in
+   `metadata/pom.xml` and the parent `pom.xml`.
+
+### Major GraalVM version bump (e.g. 25 → 26)
+
+1. Build and publish `bookworm-graal26` / `bookworm-26.0.0` tags in `graalvm-pi-builder`.
+2. Update `GRAALVM_PI_BUILDER_IMAGE` and the cache key in `.github/workflows/build.yml`.
+3. Update `artifactId` in `metadata/pom.xml` from `pi4j-ffm-metadata-bookworm-graal25`
+   to `pi4j-ffm-metadata-bookworm-graal26`.
+4. Update all `graal25` references in `Readme.md` and `CLAUDE.md`.
 
 ## Project structure
 
