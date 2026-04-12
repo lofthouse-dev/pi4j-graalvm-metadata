@@ -9,7 +9,6 @@ This repository produces a zero-code Maven JAR that contains a pre-captured
 any Pi4J-based GraalVM native image fails at runtime with a `MissingForeignRegistrationError`:
 
 ```
-java.lang.reflect.InaccessibleObjectException: Unable to make ... accessible
 com.oracle.svm.core.jdk.proxy.MissingForeignRegistrationError: ...
 ```
 
