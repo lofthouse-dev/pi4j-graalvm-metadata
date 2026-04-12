@@ -15,7 +15,7 @@ PROBE_JAR="$REPO_ROOT/probe/target/probe.jar"
 AGENT_FILTER="$REPO_ROOT/probe/src/main/resources/agent-filter.json"
 
 if [[ ! -f "$PROBE_JAR" ]]; then
-    echo "ERROR: Probe JAR not found at $PROBE_JAR"
+    echo "ERROR: Probe JAR not found at $PROBE_JAR" >&2
     exit 1
 fi
 
