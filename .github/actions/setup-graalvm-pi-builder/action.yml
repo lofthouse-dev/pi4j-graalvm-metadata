@@ -1,0 +1,35 @@
+name: Setup graalvm-pi-builder container
+description: Installs Podman and loads the graalvm-pi-builder image (from cache or registry pull)
+
+inputs:
+  image:
+    description: Full container image reference (e.g. ghcr.io/lofthouse-dev/graalvm-pi-builder:bookworm-25.0.2)
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Install Podman
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends podman
+      shell: bash
+
+    - name: Restore container image cache
+      id: cache-container
+      uses: actions/cache@v4
+      with:
+        path: /tmp/graalvm-pi-builder.tar
+        key: graalvm-pi-builder-${{ inputs.image }}
+
+    - name: Load container image from cache
+      if: steps.cache-container.outputs.cache-hit == 'true'
+      run: podman load -i /tmp/graalvm-pi-builder.tar
+      shell: bash
+
+    - name: Pull and save container image
+      if: steps.cache-container.outputs.cache-hit != 'true'
+      run: |
+        podman pull --platform linux/arm64 ${{ inputs.image }}
+        podman save -o /tmp/graalvm-pi-builder.tar ${{ inputs.image }}
+      shell: bash
