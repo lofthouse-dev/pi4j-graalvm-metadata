@@ -8,7 +8,8 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-IMAGE="ghcr.io/lofthouse-dev/graalvm-pi-builder:latest"
+DEFAULT_IMAGE="ghcr.io/lofthouse-dev/graalvm-pi-builder:bookworm-graal25"
+IMAGE="${GRAALVM_PI_BUILDER_IMAGE:-$DEFAULT_IMAGE}"
 OUTPUT_DIR="${1:-$REPO_ROOT/generated-config}"
 PROBE_JAR="$REPO_ROOT/probe/target/probe.jar"
 AGENT_FILTER="$REPO_ROOT/probe/src/main/resources/agent-filter.json"
@@ -24,6 +25,8 @@ echo "==> Running probe with native-image-agent..."
 echo "    Image:  $IMAGE"
 echo "    Output: $OUTPUT_DIR"
 
+# No explicit 'command -v podman' check: set -euo pipefail already causes a clear
+# 'command not found' failure if podman is absent or not on PATH.
 podman run --rm \
   --platform linux/arm64 \
   -v "$PROBE_JAR":/probe/probe.jar:Z,ro \

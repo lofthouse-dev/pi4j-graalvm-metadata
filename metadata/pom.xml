@@ -25,6 +25,17 @@
         <maven.deploy.skip>false</maven.deploy.skip>
     </properties>
 
+    <dependencies>
+        <!-- Build-order dependency only: ensures probe JAR is built before metadata generation runs.
+             Provided scope keeps it off the published artifact's transitive dependency list. -->
+        <dependency>
+            <groupId>dev.lofthouse.pi4j</groupId>
+            <artifactId>pi4j-ffm-metadata-probe</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
