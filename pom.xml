@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>dev.lofthouse.pi4j</groupId>
+    <artifactId>pi4j-ffm-metadata-parent</artifactId>
+    <version>4.0.0-1</version>
+    <packaging>pom</packaging>
+
+    <name>pi4j-ffm-metadata-parent</name>
+    <description>Parent POM for pi4j-ffm-metadata: GraalVM reachability metadata for the Pi4J FFM plugin</description>
+
+    <modules>
+        <module>probe</module>
+        <module>metadata</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.release>25</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <pi4j.version>4.0.0</pi4j.version>
+        <!-- Skip deployment for this parent POM and probe by default; metadata module overrides -->
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/lofthouse-dev/pi4j-graalvm-metadata</url>
+        </repository>
+    </distributionManagement>
+
+</project>

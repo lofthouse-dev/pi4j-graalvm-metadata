@@ -1,0 +1,5 @@
+{
+  "rules": [
+    { "includeClasses": "com.pi4j.plugin.ffm.**" }
+  ]
+}

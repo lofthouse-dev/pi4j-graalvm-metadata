@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>dev.lofthouse.pi4j</groupId>
+        <artifactId>pi4j-ffm-metadata-parent</artifactId>
+        <version>4.0.0-1</version>
+    </parent>
+
+    <artifactId>pi4j-ffm-metadata-bookworm-graal25</artifactId>
+    <packaging>jar</packaging>
+
+    <name>pi4j-ffm-metadata-bookworm-graal25</name>
+    <description>
+        GraalVM reachability metadata for com.pi4j:pi4j-plugin-ffm:4.0.0, captured on
+        Debian bookworm (same glibc as Raspberry Pi OS 12) with GraalVM CE 25.x.
+        Add as a dependency to automatically register all Pi4J FFM downcall handles
+        for native-image without any plugin configuration.
+    </description>
+
+    <properties>
+        <maven.deploy.skip>false</maven.deploy.skip>
+    </properties>
+
+    <dependencies>
+        <!-- Build-order dependency only: ensures probe JAR is built before metadata generation runs.
+             Provided scope keeps it off the published artifact's transitive dependency list. -->
+        <dependency>
+            <groupId>dev.lofthouse.pi4j</groupId>
+            <artifactId>pi4j-ffm-metadata-probe</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-graalvm-metadata</id>
+                        <phase>generate-resources</phase>
+                        <goals><goal>exec</goal></goals>
+                        <configuration>
+                            <executable>${project.basedir}/../scripts/generate-metadata.sh</executable>
+                            <arguments>
+                                <argument>${project.build.directory}/generated-resources/META-INF/native-image/com.pi4j/pi4j-plugin-ffm</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.6.0</version>
+                <executions>
+                    <execution>
+                        <id>add-generated-resources</id>
+                        <phase>generate-resources</phase>
+                        <goals><goal>add-resource</goal></goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/generated-resources</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.2</version>
+                <configuration>
+                    <!-- Zero-code JAR: resources only, no Java sources -->
+                    <excludes>
+                        <exclude>**/*.class</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
