@@ -9,6 +9,9 @@ permissions:
   contents: read
 
 env:
+  # Pinned to a version tag rather than a digest. graalvm-pi-builder is a first-party image
+  # we control; retagging bookworm-25.0.2 would be an intentional act. Digest pinning adds
+  # maintenance burden (every image rebuild produces a new digest) for negligible benefit here.
   GRAALVM_PI_BUILDER_IMAGE: ghcr.io/lofthouse-dev/graalvm-pi-builder:bookworm-25.0.2
 
 jobs:
@@ -37,12 +40,15 @@ jobs:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
 
+      - name: Install Podman
+        run: sudo apt-get install -y podman
+
       - name: Restore container image cache
         id: cache-container
         uses: actions/cache@v4
         with:
           path: /tmp/graalvm-pi-builder.tar
-          key: graalvm-pi-builder-bookworm-25.0.2
+          key: graalvm-pi-builder-${{ env.GRAALVM_PI_BUILDER_IMAGE }}
 
       - name: Load container image from cache
         if: steps.cache-container.outputs.cache-hit == 'true'
