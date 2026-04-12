@@ -10,8 +10,10 @@ Versions follow `<pi4j-version>-<metadata-patch>`, e.g. `4.0.0-1`.
 
 Bump the metadata patch number when:
 - A GraalVM patch upgrade changes the set of captured downcall descriptors
-- The Pi4J version changes (bump the pi4j-version component instead)
 - Any other change to the captured metadata is needed
+
+When the Pi4J version changes, update the pi4j-version component and reset the metadata
+patch to 0 — e.g. `4.0.0-3-SNAPSHOT` → `5.0.0-0-SNAPSHOT`.
 
 ## Release procedure
 
