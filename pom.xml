@@ -4,7 +4,7 @@
 
     <groupId>dev.lofthouse.pi4j</groupId>
     <artifactId>pi4j-ffm-metadata-parent</artifactId>
-    <version>4.0.0-3</version>
+    <version>4.0.0-4-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>pi4j-ffm-metadata-parent</name>
@@ -19,7 +19,7 @@
         <connection>scm:git:ssh://git@github.com/lofthouse-dev/pi4j-graalvm-metadata.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/lofthouse-dev/pi4j-graalvm-metadata.git</developerConnection>
         <url>https://github.com/lofthouse-dev/pi4j-graalvm-metadata</url>
-        <tag>4.0.0-3</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <properties>
