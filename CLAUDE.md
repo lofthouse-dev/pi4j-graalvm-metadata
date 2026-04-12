@@ -13,7 +13,7 @@ Full background: `notes/pi4j-graalvm-metadata-project.md` (in the iron-j repo).
 |---|---|---|
 | 1 | **Done** | Probe + metadata generation verified locally |
 | 2 | **Done** | Maven pom.xml for `metadata` module; dynamic generation wired into build; publish config added |
-| 3 | TODO | GitHub Actions workflow: probe → generate → publish |
+| 3 | **In progress** | GitHub Actions workflow: probe → generate → publish (PR build workflow added; publish step pending) |
 
 ---
 
@@ -35,7 +35,7 @@ version — it is encoded in the artifactId (`graal25` = GraalVM major 25.x.y).
 | Purpose | Image |
 |---|---|
 | Local dev | `ghcr.io/lofthouse-dev/graalvm-pi-builder:latest` (built with `make build-dev`) |
-| CI | `ghcr.io/lofthouse-dev/graalvm-pi-builder:bookworm-graal25` |
+| CI | `ghcr.io/lofthouse-dev/graalvm-pi-builder:bookworm-25.0.2` (version-pinned; see upgrade guide in Readme.md) |
 
 The container is `debian:bookworm` + GraalVM CE 25 + `libi2c-dev` + (previously JBang, now
 unused for this project). Built in `graalvm-pi-builder/` in the iron-j repo.

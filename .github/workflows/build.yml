@@ -1,0 +1,64 @@
+name: Build
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  # Pinned to a version tag rather than a digest. graalvm-pi-builder is a first-party image
+  # we control; retagging bookworm-25.0.2 would be an intentional act. Digest pinning adds
+  # maintenance burden (every image rebuild produces a new digest) for negligible benefit here.
+  GRAALVM_PI_BUILDER_IMAGE: ghcr.io/lofthouse-dev/graalvm-pi-builder:bookworm-25.0.2
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU (arm64)
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+
+      - name: Set up Java 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-
+
+      - name: Install Podman
+        run: sudo apt-get install -y podman
+
+      - name: Restore container image cache
+        id: cache-container
+        uses: actions/cache@v4
+        with:
+          path: /tmp/graalvm-pi-builder.tar
+          key: graalvm-pi-builder-${{ env.GRAALVM_PI_BUILDER_IMAGE }}
+
+      - name: Load container image from cache
+        if: steps.cache-container.outputs.cache-hit == 'true'
+        run: podman load -i /tmp/graalvm-pi-builder.tar
+
+      - name: Pull and save container image
+        if: steps.cache-container.outputs.cache-hit != 'true'
+        run: |
+          podman pull --platform linux/arm64 ${{ env.GRAALVM_PI_BUILDER_IMAGE }}
+          podman save -o /tmp/graalvm-pi-builder.tar ${{ env.GRAALVM_PI_BUILDER_IMAGE }}
+
+      - name: Build
+        run: mvn --batch-mode package
