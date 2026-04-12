@@ -76,7 +76,7 @@ probe/
   pom.xml                        Depends on pi4j-plugin-ffm:4.0.0; builds fat JAR via shade
   src/main/java/Probe.java       Instantiates the 5 *Native classes to trigger static init
   src/main/resources/
-    agent-filter.json            Restricts agent capture to com.pi4j.plugin.ffm.**
+    agent-filter.json            Restricts agent capture to com.pi4j.plugin.ffm.** (native-image-agent glob syntax, not regex)
 scripts/
   run-probe.sh                   Builds probe JAR, runs in container with agent
 metadata/
@@ -84,7 +84,7 @@ metadata/
   src/main/resources/
     META-INF/native-image/
       com.pi4j/pi4j-plugin-ffm/
-        reachability-metadata.json  (generated; committed after verification)
+        reachability-metadata.json  (generated at build time; not committed)
 ```
 
 ---

@@ -27,6 +27,8 @@ echo "    Output: $OUTPUT_DIR"
 
 # No explicit 'command -v podman' check: set -euo pipefail already causes a clear
 # 'command not found' failure if podman is absent or not on PATH.
+# agent-filter.json uses native-image-agent glob syntax (** = any sub-package),
+# not Java regex — com.pi4j.plugin.ffm.** is correct and intentional.
 podman run --rm \
   --platform linux/arm64 \
   -v "$PROBE_JAR":/probe/probe.jar:Z,ro \
