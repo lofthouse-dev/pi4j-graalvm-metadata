@@ -13,7 +13,7 @@ Full background: `notes/pi4j-graalvm-metadata-project.md` (in the iron-j repo).
 |---|---|---|
 | 1 | **Done** | Probe + metadata generation verified locally |
 | 2 | **Done** | Maven pom.xml for `metadata` module; dynamic generation wired into build; publish config added |
-| 3 | **In progress** | GitHub Actions workflow: probe → generate → publish (PR build workflow added; publish step pending) |
+| 3 | **Done** | GitHub Actions workflows: `build.yml` (PR) + `publish.yml` (tag push → deploy to GitHub Packages) |
 
 ---
 
@@ -21,9 +21,14 @@ Full background: `notes/pi4j-graalvm-metadata-project.md` (in the iron-j repo).
 
 | Module | Artifact | Notes |
 |---|---|---|
-| Parent | `dev.lofthouse.pi4j:pi4j-ffm-metadata-parent:4.0.0-1:pom` | Not published |
-| Probe | `dev.lofthouse.pi4j:pi4j-ffm-metadata-probe:4.0.0-1:jar` | Not published; internal build tool |
-| **Metadata** | **`dev.lofthouse.pi4j:pi4j-ffm-metadata-bookworm-graal25:4.0.0-1:jar`** | Published artifact |
+| Parent | `dev.lofthouse.pi4j:pi4j-ffm-metadata-parent:4.0.0-3:pom` | Published (from 4.0.0-3; was skipped in earlier releases — see step progress) |
+| Probe | `dev.lofthouse.pi4j:pi4j-ffm-metadata-probe:4.0.0-3:jar` | Not published; internal build tool |
+| **Metadata** | **`dev.lofthouse.pi4j:pi4j-ffm-metadata-bookworm-graal25:4.0.0-3:jar`** | Latest published; captured against Pi4J 4.0.0. Next release `4.0.1-0` needed for Pi4J 4.0.1 consumers. |
+
+**Current state (2026-05-17):** `4.0.0-3` is the latest published version (confirmed pushed
+and released). The next required release is `4.0.1-0` to match the Pi4J version used by
+`pux4j` consumers (`4.0.1`). The current SNAPSHOT is `4.0.0-4-SNAPSHOT` — this must be
+reset to `4.0.1-0-SNAPSHOT` before releasing (see versioning scheme in `RELEASING.md`).
 
 **Versioning:** `<pi4j-version>-<metadata-patch>`. GraalVM patch version is NOT in the Maven
 version — it is encoded in the artifactId (`graal25` = GraalVM major 25.x.y).
