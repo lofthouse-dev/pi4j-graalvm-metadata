@@ -4,7 +4,7 @@
 
     <groupId>dev.lofthouse.pi4j</groupId>
     <artifactId>pi4j-ffm-metadata-parent</artifactId>
-    <version>4.0.0-4-SNAPSHOT</version>
+    <version>4.0.1-0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>pi4j-ffm-metadata-parent</name>
