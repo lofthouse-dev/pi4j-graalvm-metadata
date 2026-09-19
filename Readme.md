@@ -86,7 +86,7 @@ Add the following to your Maven `~/.m2/settings.xml`:
 | **Java** | GraalVM CE 25 (or any JDK 25+; GraalVM is needed inside the container) |
 | **Maven** | 3.9+ |
 | **Podman** | Must be on `PATH`; used to run the `graalvm-pi-builder` container |
-| **Container image** | `ghcr.io/lofthouse-dev/graalvm-pi-builder:bookworm-graal25` — pulled automatically on first run (local); CI pins to `bookworm-25.0.2` |
+| **Container image** | `ghcr.io/lofthouse-dev/graalvm-pi-builder:bookworm-graal25` — pulled automatically on first run (local); CI pins to `bookworm-25.3.4.1` |
 
 > **Note:** Docker is not supported. The build scripts use `podman` explicitly.
 
@@ -139,7 +139,7 @@ The CI build:
 1. Installs Temurin 25 on the runner to compile the probe JAR.
 2. Sets up QEMU binfmt for arm64 emulation (needed to run the arm64 container on x86_64).
 3. Runs `mvn package` with `GRAALVM_PI_BUILDER_IMAGE` pinned to a version-specific container
-   tag (`bookworm-25.0.2`) rather than the mutable `bookworm-graal25` tag, for reproducibility.
+   tag (`bookworm-25.3.4.1`) rather than the mutable `bookworm-graal25` tag, for reproducibility.
 4. Caches both Maven dependencies and the container image between runs.
 
 ## Upgrading the GraalVM build environment
@@ -149,7 +149,7 @@ The container image used at build time has two tag forms:
 | Tag | Meaning |
 |---|---|
 | `bookworm-graal25` | Mutable — always the latest GraalVM 25.x build; convenient for local dev |
-| `bookworm-25.0.2` | Version-pinned — specific build; used by CI for reproducibility |
+| `bookworm-25.3.4.1` | Version-pinned — specific build; used by CI for reproducibility |
 
 ### Minor GraalVM patch upgrade (e.g. 25.0.2 → 25.0.3)
 
