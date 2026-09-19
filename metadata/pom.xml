@@ -13,7 +13,7 @@
 
     <name>pi4j-ffm-metadata-bookworm-graal25</name>
     <description>
-        GraalVM reachability metadata for com.pi4j:pi4j-plugin-ffm:4.0.0, captured on
+        GraalVM reachability metadata for com.pi4j:pi4j-plugin-ffm:4.0.2, captured on
         Debian bookworm (same glibc as Raspberry Pi OS 12) with GraalVM CE 25.x.
         Add as a dependency to automatically register all Pi4J FFM downcall handles
         for native-image without any plugin configuration.

@@ -17,6 +17,24 @@ patch to 0 — e.g. `4.0.0-3-SNAPSHOT` → `5.0.0-0-SNAPSHOT`.
 
 ## Release procedure
 
+Before starting, clean up any artifacts left behind by a previous release cycle:
+
+```bash
+mvn release:clean
+```
+
+A successful `mvn release:perform` leaves the working directory with a stale
+`release.properties` file (plus `pom.xml.releaseBackup` files in each module) recording the
+completed release cycle. These are untracked and **not** removed automatically. If you run
+`release:prepare` again without cleaning them up first, the plugin finds the old
+`release.properties` with `completedPhase=end-release` and short-circuits, printing
+"Release preparation already completed. You can now continue with release:perform, or start
+again using the -Dresume=false flag" — without actually preparing the new version. This is
+misleading: it looks like the current release prepared successfully, when it's actually just
+reporting the previous release's already-completed state. `-Dresume=false` alone is **not**
+sufficient — the stale `release.properties` and backup POMs still need to be removed, which is
+what `release:clean` does.
+
 From a **clean working tree** on `main`:
 
 ```bash

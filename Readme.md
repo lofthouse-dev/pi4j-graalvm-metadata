@@ -1,6 +1,6 @@
 # pi4j-graalvm-metadata
 
-GraalVM reachability metadata for `com.pi4j:pi4j-plugin-ffm:4.0.0`.
+GraalVM reachability metadata for `com.pi4j:pi4j-plugin-ffm:4.0.2`.
 
 ## What it does
 
@@ -35,12 +35,12 @@ this library ships the pre-captured metadata so it is applied automatically.
 
 | Artifact | Coordinates |
 |---|---|
-| **Metadata JAR** | `dev.lofthouse.pi4j:pi4j-ffm-metadata-bookworm-graal25:4.0.0-1` |
+| **Metadata JAR** | `dev.lofthouse.pi4j:pi4j-ffm-metadata-bookworm-graal25:4.0.2-0` |
 
 The artifactId encodes the capture environment: `bookworm` = Debian 12 (same glibc as
 Raspberry Pi OS 12), `graal25` = GraalVM CE major version 25.
 
-**Versioning scheme:** `<pi4j-version>-<metadata-patch>` — e.g. `4.0.0-1`. The GraalVM patch
+**Versioning scheme:** `<pi4j-version>-<metadata-patch>` — e.g. `4.0.2-0`. The GraalVM patch
 version is not in the Maven version; it is encoded in the artifactId.
 
 ## Using the artifact
@@ -59,7 +59,7 @@ Add the following to your project's `pom.xml`:
   <dependency>
     <groupId>dev.lofthouse.pi4j</groupId>
     <artifactId>pi4j-ffm-metadata-bookworm-graal25</artifactId>
-    <version>4.0.0-1</version>
+    <version>4.0.2-0</version>
   </dependency>
 </dependencies>
 ```
