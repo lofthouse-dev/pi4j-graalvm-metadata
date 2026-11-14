@@ -14,6 +14,7 @@ Full background: `notes/pi4j-graalvm-metadata-project.md` (in the iron-j repo).
 | 1 | **Done** | Probe + metadata generation verified locally |
 | 2 | **Done** | Maven pom.xml for `metadata` module; dynamic generation wired into build; publish config added |
 | 3 | **Done** | GitHub Actions workflows: `build.yml` (PR) + `publish.yml` (tag push → deploy to GitHub Packages) |
+| 4 | **Done** | `metadata-drift.yml`: compares regenerated metadata with the latest release, reports newer Pi4J / graalvm-pi-builder, keeps one tracking issue (see Readme.md) |
 
 ---
 

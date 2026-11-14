@@ -146,6 +146,56 @@ The CI build:
    tested.
 4. Caches both Maven dependencies and the container image between runs.
 
+### Metadata drift workflow
+
+`.github/workflows/metadata-drift.yml` answers "does the captured metadata still match the latest
+release?" without a manual comparison, and reports newer inputs. It never releases anything
+(releases are manual, see [RELEASING.md](RELEASING.md)).
+
+It runs on a weekly schedule (Mondays 06:17 UTC), on `workflow_dispatch`, and on pull requests
+that touch the builder pin, `pom.xml`, `metadata/pom.xml`, the probe, the scripts below or the
+workflow itself. It has three jobs, so that code from a pull request never runs with issue-write
+access: `drift` (generate and compare; read-only token, git credentials not persisted), `report`
+(updates the tracking issue; the only job with `issues: write`, and it runs only on scheduled runs
+and manual runs that ask for it) and `verdict` (fails the run when the metadata differs or a job
+failed). The `drift` job:
+
+1. Generates the metadata on the pinned image, exactly like the CI build.
+2. Fetches `reachability-metadata.json` from the jar of the latest release. The latest release is
+   the highest version tag (history is linear); the jar comes from GitHub Packages using the
+   workflow's `GITHUB_TOKEN` (`packages: read`). The artifactId is read from the `metadata/pom.xml`
+   at that tag, so the comparison still works on the commit that moves to a new GraalVM major
+   (`graal25` to `graal26`), when the latest release only contains the old artifact.
+3. Compares the two with `scripts/compare-metadata.sh`. The comparison is normalised: object keys
+   and the order of the entries of the downcall and resource lists are ignored, so a change in
+   order or formatting passes with a note. Arrays of values are positional and are not sorted,
+   so a changed `parameterTypes` order (a different native signature) is a real difference. A real
+   content difference fails the run and prints a diff. The files and the diff are uploaded as the `metadata-drift`
+   artifact and the report is in the job summary.
+4. Reports newer versions with `scripts/check-updates.sh`: a newer Pi4J on Maven Central than
+   `pi4j.version`, and a newer `bookworm-<version>` graalvm-pi-builder tag in GHCR than the pin.
+   These never fail the run. A failed lookup is a warning and is marked "lookup incomplete" in the
+   report: it is not read as "up to date", so it can neither open nor close the tracking issue.
+
+**Tracking issue.** On scheduled runs, and on manual runs with the `open_issue` input ticked, the
+workflow keeps one issue (found by its `metadata-drift` label, titled "Pi4J metadata: release or
+version update needed") up to date with `scripts/update-tracking-issue.sh`. It is created when
+the metadata differs or a newer version exists, its description is replaced with the latest
+report on each run (no comment per run), it is reopened if the problem returns, and it is closed
+when a run finds nothing to do with both version lookups complete. Pull request runs never touch it.
+
+When the run fails because the metadata differs, a new metadata release is needed: bump the
+metadata patch and release as described in [RELEASING.md](RELEASING.md).
+
+The scripts can be run locally. For `compare-metadata.sh` use the generated file under
+`metadata/target/generated-resources/META-INF/native-image/com.pi4j/pi4j-plugin-ffm/`;
+`fetch-released-metadata.sh` accepts `RELEASED_JAR=<local jar>` instead of downloading, and
+`update-tracking-issue.sh` has a `DRY_RUN=1` mode that prints the `gh` commands.
+
+Limits: scheduled workflows only run from the default branch, so the schedule starts after the
+first merge. The jar download needs the token to read packages; a pull request from a fork may
+not get that permission, in which case the fetch step fails with a message saying so.
+
 ## Upgrading the GraalVM build environment
 
 The container image used at build time has two tag forms:
